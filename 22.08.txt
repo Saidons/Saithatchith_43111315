@@ -1,0 +1,49 @@
+SET SQL_SAFE_UPDATES = 0;
+show databases;
+CREATE DATABASE cse;
+use cse;
+create table e3(
+regno int,
+sname varchar(15),
+age int,
+cgpa float
+);
+create table e2(
+regno int,
+sname varchar(15),
+age int,
+cgpa float
+);
+show tables from cse;
+desc e2;
+desc e3;
+
+insert into e3 values(43111370,'Shyam',20,8.04),(43111373,'Sharan',20,8.44),(43111389,'Karthikeyan',19,8.04);
+insert into e2 values(43111270,'Sai',20,7.04),(43111273,'Gopi',20,7),(43111289,'Ajay',20,8.04);
+
+alter table e2 add marks int;
+update e2 set marks = 100 where regno = 43111270;
+update e2 set marks = 120 where regno = 43111273;
+update e2 set marks = 140 where regno = 43111289;
+
+alter table e3 add marks int;
+update e3 set marks = 160 where regno = 43111370;
+update e3 set marks = 180 where regno = 43111373;
+update e3 set marks = 150 where regno = 43111389;
+
+delete from e2 where regno = 43111289;
+
+alter table e2 drop column marks;
+
+select * from e2;
+select * from e3;
+
+start transaction;
+update e3 set marks = marks + 5 where regno = 43111370;
+savepoint after_shyam;
+update e3 set marks = marks + 5 where regno = 43111373;
+rollback to after_shyam;
+commit;
+
+drop table e2;
+drop table e3;
