@@ -1,0 +1,49 @@
+SET SQL_SAFE_UPDATES = 0;
+show databases;
+CREATE DATABASE cse;
+use cse;
+create table e3(
+regno int,
+sname varchar(15),
+age int,
+cgpa float
+);
+create table e2(
+regno int,
+sname varchar(15),
+age int,
+cgpa float
+);
+show tables from cse;
+desc e2;
+desc e3;
+
+insert into e3 values(43111270,'kari gopi',20,8.04),(43111373,'sugu',20,8.44),(43111389,'surya',19,8.04);
+insert into e2 values(43111315,'sai',20,7.04),(43111343,'gopi',20,7),(43111331,'subish',20,8.04);
+
+alter table e2 add marks int;
+update e2 set marks = 100 where regno = 43111315;
+update e2 set marks = 120 where regno = 43111343;
+update e2 set marks = 140 where regno = 43111331;
+
+alter table e3 add marks int;
+update e3 set marks = 160 where regno = 43111270;
+update e3 set marks = 180 where regno = 43111373;
+update e3 set marks = 150 where regno = 43111389;
+
+delete from e2 where regno = 43111343;
+
+alter table e2 drop column marks;
+
+select * from e2;
+select * from e3;
+
+start transaction;
+update e3 set marks = marks + 5 where regno = 43111270;
+save point after Kari Gopi;
+update e3 set marks = marks + 5 where regno = 43111373;
+rollback to after_kari gopi;
+commit;
+
+drop table e2;
+drop table e3;
