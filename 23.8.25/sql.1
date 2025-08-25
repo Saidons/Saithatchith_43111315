@@ -8,10 +8,10 @@ mobilenumber int not null,
 workerposition Varchar(10)
 );
 insert into workers (Workername,Worker_id,mobilenumber,workerposition) values
-('inti',1,987654,'coolie');
+('gopi',1,562812,'employe');
 select * from workers;
 insert into workers (Workername,Worker_id,mobilenumber,workerposition) values
-('Varun',2,76534,'CEO');
+('sai',3,663388,'CEO');
 alter table workers
 drop index idx_mobile;
 create index idx_mobile on workers(mobilenumber);
@@ -41,7 +41,7 @@ personid int auto_increment primary key,
 personage int check (personage>18 and personage<120)
 );
 insert into persons(personname,personage) values
-('Varun',27);
+('sai',23);
  alter table persons
  drop personage;
  select*from persons;
@@ -51,7 +51,7 @@ insert into persons(personname,personage) values
 alter table persons
 add constraint chk_1 check (personage>18 and personage<100);
 insert into persons(personname,personage) values
-('reddy',89);
+('deva',48);
 select distinct personname from persons;
 delete from persons 
 where personid=1;
@@ -66,9 +66,9 @@ cname varchar(30) not null,
 cdes varchar(50) not null
 );
 insert into categories (cid,cname,cdes) values
-(101,'mobiles','good');
+(003,'coolers','good');
 insert into categories (cid,cname,cdes) values
-(102,'watches','very good');
+(004,'watches','very good');
 create table products(
 pid int not null primary key,
 pname varchar(30) not null,
@@ -78,9 +78,10 @@ foreign key (cid) references  categories (cid)
 on update cascade
 );
 insert into products (pid,pname,pdes,cid) values
-(903,'Samsung','Works good',102);
+(597,'iphone','Works good',004);
 select* from products;
 select * from categories;
 update categories 
-set cid = 108
-where cid = 101;
+set cid = 007
+
+where cid = 003;
