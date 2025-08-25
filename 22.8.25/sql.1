@@ -1,0 +1,121 @@
+show databases;
+create database sathyabama;
+use sathyabama;
+show tables;
+create table cse(
+sid int,
+sname varchar(30),
+srno int,
+smarks int
+);
+show tables;
+show tables from sathyabama;
+desc cse;
+select * from cse;
+alter table cse 
+drop column smarks;
+desc cse;
+
+create table ece(
+sid int,
+sname varchar(100),
+srno int,
+smarks int,
+scity varchar(100)
+);
+desc ece;
+select * from ece;
+select* from cse;
+
+insert into ece
+values(1,"abc",10,90,"Chennai");
+insert into ece 
+values
+(2,"def",11,80,"Chennai"),
+(3,"ghi",12,85,"Bangalore"),
+(4,"jkl",13,50,"Hyderabad");
+select * from ece;
+
+insert into cse
+values
+(1,"xyz",20),
+(2,"uvw",21),
+(3,"rst",22);
+select * from cse;
+
+alter table ece
+drop column smarks;
+select * from ece;
+
+alter table ece 
+add column age int default 18;
+select * from ece;
+
+update ece 
+set scity = "Bangalore"
+where sid = 1;
+select * from ece;
+
+alter table ece 
+change age sage int;
+select * from ece;
+
+alter table ece 
+add column smarks int ;
+insert into ece (smarks)
+values
+(80),
+(70),
+(60),
+(90);
+DELETE FROM ece WHERE id = null;
+DELETE FROM ece WHERE smarks > 59;
+alter table ece drop smarks;
+alter table ece
+add column smarks int;
+update ece
+set smarks = 80
+where sid = 1;
+update ece
+set smarks = 85
+where sid = 2;
+update ece
+set smarks = 70
+where sid = 3;
+update ece
+set smarks = 60
+where sid = 4;
+select * from ece;
+
+update ece 
+set scity = "Chennai", smarks = 50
+where sid = 3;
+
+start transaction;
+insert into cse 
+values(4,"abc",23);
+commit;
+select * from cse;
+rollback;
+select * from cse;
+
+start transaction;
+ insert into cse 
+values(5,"def",24);
+delete from ece where sid = 5;
+select * from cse;
+delete from cse where sid = 4;
+rollback;
+commit;
+
+start transaction;
+ insert into cse 
+values(5,"def",24);
+savepoint step1;
+insert into cse
+values(6,"ghi",25);
+rollback to step1;
+select * from cse;
+commit;
+
+show variables like 'autocommit';
