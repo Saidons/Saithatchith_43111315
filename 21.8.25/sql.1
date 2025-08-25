@@ -16,31 +16,32 @@ alter table cse
 drop column smarks;
 desc cse;
 
-create table ece(
+create table it(
 sid int,
 sname varchar(100),
 srno int,
 smarks int,
 scity varchar(100)
 );
-desc ece;
-select * from ece;
+desc it;
+select * from it;
 select* from cse;
 
-insert into ece
+insert into it
 values(1,"abc",10,90,"Chennai");
-insert into ece 
+insert into it 
 values
 (2,"def",11,80,"Chennai"),
-(3,"ghi",12,85,"Bangalore"),
-(4,"jkl",13,50,"Hyderabad");
-select * from ece;
+(3,"ghi",12,85,"mysore"),
+(4,"jkl",13,50,"kerala");
+select * from it;
 insert into cse
 values
 (1,"xyz",20),
 (2,"uvw",21),
 (3,"rst",22);
 select * from cse;
-alter table ece
+alter table it
 drop column smarks;
-select * from ece;
+
+select * from it;
