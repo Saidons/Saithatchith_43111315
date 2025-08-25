@@ -16,25 +16,25 @@ alter table cse
 drop column smarks;
 desc cse;
 
-create table ece(
+create table it(
 sid int,
 sname varchar(100),
 srno int,
 smarks int,
 scity varchar(100)
 );
-desc ece;
-select * from ece;
+desc it;
+select * from it;
 select* from cse;
 
-insert into ece
+insert into it
 values(1,"abc",10,90,"Chennai");
-insert into ece 
+insert into it 
 values
 (2,"def",11,80,"Chennai"),
-(3,"ghi",12,85,"Bangalore"),
-(4,"jkl",13,50,"Hyderabad");
-select * from ece;
+(3,"ghi",12,85,"mysore"),
+(4,"jkl",13,50,"kerala");
+select * from it;
 
 insert into cse
 values
@@ -43,51 +43,51 @@ values
 (3,"rst",22);
 select * from cse;
 
-alter table ece
+alter table it
 drop column smarks;
-select * from ece;
+select * from it;
 
-alter table ece 
+alter table it
 add column age int default 18;
-select * from ece;
+select * from it;
 
-update ece 
-set scity = "Bangalore"
+update it
+set scity = "mysore"
 where sid = 1;
-select * from ece;
+select * from it;
 
-alter table ece 
+alter table it
 change age sage int;
-select * from ece;
+select * from it;
 
-alter table ece 
+alter table it 
 add column smarks int ;
-insert into ece (smarks)
+insert into it (smarks)
 values
 (80),
 (70),
 (60),
 (90);
-DELETE FROM ece WHERE id = null;
-DELETE FROM ece WHERE smarks > 59;
-alter table ece drop smarks;
-alter table ece
+DELETE FROM it WHERE id = null;
+DELETE FROM it WHERE smarks > 59;
+alter table it drop smarks;
+alter table it
 add column smarks int;
-update ece
+update it
 set smarks = 80
 where sid = 1;
-update ece
+update it
 set smarks = 85
 where sid = 2;
-update ece
+update it
 set smarks = 70
 where sid = 3;
-update ece
+update it
 set smarks = 60
 where sid = 4;
-select * from ece;
+select * from it;
 
-update ece 
+update it
 set scity = "Chennai", smarks = 50
 where sid = 3;
 
@@ -102,7 +102,7 @@ select * from cse;
 start transaction;
  insert into cse 
 values(5,"def",24);
-delete from ece where sid = 5;
+delete from it where sid = 5;
 select * from cse;
 delete from cse where sid = 4;
 rollback;
@@ -117,5 +117,6 @@ values(6,"ghi",25);
 rollback to step1;
 select * from cse;
 commit;
+
 
 show variables like 'autocommit';
