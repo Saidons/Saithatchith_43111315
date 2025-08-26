@@ -1,0 +1,106 @@
+show databases;
+create database accessories;
+use accessories;
+show tables;
+
+create table categories (
+  cid int not null primary key,
+  cname varchar(50) not null,
+  cdes varchar(50) not null
+);
+create table products (
+  pid int not null primary key,
+  pname varchar(50) not null,
+  pdes varchar(50) not null,
+  cid int not null,
+  foreign key (cid) references categories (cid)
+  on update cascade
+  on delete cascade
+);
+insert into categories (cid, cname, cdes) values
+(1, 'sunglass', 'goog'),
+(2, 'Watch', 'Analog'),
+(3, 'Phone', 'Good Camera');
+insert into products (pid, pname, pdes, cid) values
+(101, 'oppo f27', 'With ANC', 1),
+(102, 'richard mille', 'Analog', 2),
+(103, 'ray-ban', 'good', 2),
+(104, 'IPhone 15 pro max', 'Good Camera', 3),
+(105, 'Samsung Galaxy S25 Ultra', 'Good Camera', 3);
+
+select * from categories;
+select * from products;
+
+update categories set cid=10 where cid=1;
+delete from categories where cid = 2;
+
+drop table categories;
+drop table products;
+
+create table college (
+    college_id int primary key,
+    college_name varchar(50) not null
+);
+create table department (
+    dept_id int primary key,
+    dept_name varchar(50) not null,
+    college_id int,
+    foreign key (college_id) references college(college_id)
+    on update cascade
+    on delete cascade
+);
+create table student (
+    student_id int primary key,
+    student_name varchar(50) not null,
+    dept_id int,
+    foreign key (dept_id) references department(dept_id)
+    on update cascade
+    on delete cascade
+);
+insert into college (college_id, college_name) values
+(1, ' Sathyabama'),
+(2, 'VIT');
+insert into department (dept_id, dept_name, college_id) values
+(101, 'CSE', 1),
+(102, 'IT', 1),
+(201, 'MECH', 2);
+insert into student (student_id, student_name, dept_id) values
+(1001, 'Alice', 101),
+(1002, 'Bob', 101),
+(1003, 'Charlie', 102),
+(1004, 'David', 201);
+
+update college set college_id = 10 where college_id = 1;
+
+select * from college;
+select * from department;
+
+delete from college where college_id = 2;
+
+select * from college;
+select * from department;
+select * from student;
+
+update department set dept_id = 110 where dept_id = 101;
+
+select * from department;
+select * from student;
+
+#aliases
+select student_name as name, dept_id as department from student;
+select dept_id as id, dept_name as name from department;
+
+#like
+select * from student where student_name like 'a%';
+select * from student where student_name like '%n';
+select * from student where student_name like '%ar%';
+select * from student where student_name like '_a%';
+
+#views
+create view student_view as select student_name, dept_id from student;
+select * from student_view;
+
+create or replace view dept_view as select dept_id, dept_name from department;
+select * from dept_view;
+
+drop view student_view;
