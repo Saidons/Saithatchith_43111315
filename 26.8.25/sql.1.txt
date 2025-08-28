@@ -1,0 +1,108 @@
+show databases;
+use org123;
+show tables;
+select * from worker;
+
+
+select * from worker where department = "admin" and salary>=200000;
+select * from worker where first_name like 'a%' and last_name like 's%';
+select first_name, joining_date, department  from worker  where joining_date > '2014-03-01' and department = 'Admin';
+
+
+select * from worker where salary > 300000 or department = 'Admin';
+select * from worker where first_name = 'sai' or last_name = 'thatchith';
+select first_name, department, salary from worker where department = 'HR' or salary > 500000;
+
+
+select first_name, department from worker where not department = 'HR';
+select first_name, salary from worker where not (salary between 100000 and 300000);
+
+select first_name, joining_date, department, salary from worker where (joining_date < '2018-04-20' or salary > 400000) 
+and not department = 'Admin';
+
+select first_name, salary from worker where salary != 300000;
+select first_name, joining_date, salary from worker where joining_date >= '2016-06-06' and salary != 100000;
+
+#in and not in
+select first_name, department from worker where department in ('HR');
+select first_name, department, salary from worker where department in ('admin', 'HR')  and salary > 90000;
+select first_name, department, salary from worker where department in ('admin', 'HR') and not salary = 30000;
+
+select first_name, department, joining_date from worker where department not in ('HR') or joining_date > '2020-02-02';
+select first_name, department, salary from worker where department not in ('HR', 'Sales') and salary between 40000 and 80000;
+select first_name, department, joining_date, salary from worker where department not in ('admin') and joining_date < '2015-05-05'
+and salary > 60000;
+
+select first_name, department, salary, joining_date from worker where department = 'Admin' and salary between 40000 and 100000
+and joining_date > '2014-05-23';
+select first_name, department, salary, joining_date from worker where department in ('HR', 'Admin') and salary between 50000 and 90000
+and joining_date between '2014-01-01' and '2014-11-05';
+select first_name, department, salary, joining_date from worker where salary between 25000 and 35000 
+or (department = 'Admin' and joining_date between '2014-08-09' and '2014-12-31');
+
+#Find workers not in HR or Admin with salary between 70000 and 300000.
+select * from worker where department not in ('hr','admin') and salary between 70000 and 300000;
+
+#Find workers with first name starting with 'V' and salary greater than or equal to 200000.
+select * from worker where first_name like 'v%' and salary>= 200000;
+
+#Find workers not in Admin with salary < 100000.
+select * from worker where department not in('admin') and salary < 100000;
+
+#aggregation functions
+select count(*) as total_workers from worker;
+select count(department) as total_departments  from worker where department = 'hr';
+
+select sum(salary) as total_salary from worker;
+select sum(salary) as admin_salary_total from worker where department = 'admin' and joining_date > '2014-08-09';
+
+select avg(salary) as avg_salary from worker;
+select avg(salary) as high_earners_avg from worker where salary > 100000;
+
+select min(salary) as lowest_salary from worker;
+select min(salary) as non_hr_lowest from worker where department != 'hr';
+select min(salary) as min_hr_salary from worker where department = 'hr';
+
+select max(salary) as highest_salary from worker;
+select max(first_name) as max_value from worker;
+select max(joining_date) as max_date from worker;
+
+#1. Find the average salary in the Admin department.
+select avg(salary) as avg_admin_salary from worker where department = 'admin';
+
+#2. Total salary for HR and Admin departments combined.
+select sum(salary) as total_hr_admin_salary from worker where department in ('hr','admin');
+
+#4. Count employees whose first name starts with 'V'.
+select count(*) from worker where first_name like 'v%'; 
+
+#5. Total salary of employees with salary between 50000 and 200000.
+select sum(salary) as total_salary from worker where salary between 50000 and 200000;
+
+#union and union all
+select first_name from worker where department = 'hr'
+union
+select first_name from worker where department = 'admin';
+
+select first_name from worker where department = 'hr'
+union all
+select first_name from worker where department = 'admin';
+
+#switch-case
+select first_name,last_name,salary,
+case 
+when salary < 80000 then 'Low Salary'
+when salary between 80000 and 150000 then 'Medium Salary'
+else 'High Salary'
+end as salary_category from worker;
+
+select 
+    first_name,
+    last_name,
+    department,
+    case department
+        when 'hr' then 'D01'
+        when 'admin' then 'D02'
+        else 'D00'
+    end as dept_code
+from worker;
