@@ -1,0 +1,29 @@
+show databases;
+use cse;
+show tables;
+select * from employees;
+select dept, count(dept) as count_dept from employees group by dept order by count_dept desc;
+
+select count(empname) from employees where dept <> 'HR' and dept <> 'Admin';
+
+select dept, empname, max(salary) from employees group by dept;
+
+select * from employees order by empid limit 4 offset 2;
+
+select * from (select *, row_number() over (order by empid) as rn from employees) as temp
+where rn > 5;
+
+select dept, avg(salary) as avg_salary from employees
+group by dept
+having avg(salary) > 100000;
+
+select dept, max(SALARY) from employees group by dept having max(salary) = 500000;
+
+select dept, COUNT(*) as count, SUM(salary) as total_salary
+from employees
+group by dept
+having COUNT(*) > 1 and SUM(salary) > 100000;
+
+select dept, avg(salary) as average_salary from employees
+group by dept
+having avg(salary) between 50000 and 200000;
