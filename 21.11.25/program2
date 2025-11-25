@@ -1,0 +1,50 @@
+package study;
+import java.util.Scanner;
+public class Semo {
+    public static void main(String[] args) {
+        try {
+            Scanner s = new Scanner(System.in);
+            System.out.println("Enter value for a:");
+            int a = s.nextInt();
+            System.out.println("Enter value for b:");
+            int b = s.nextInt();
+            System.out.println("Output:" + (a / b));
+
+        }catch(ArithmeticException e) {
+            System.out.println("The mistake is: " + e);
+            System.out.println("Enter the correct value");
+        }
+        System.out.println("NullPointerException:");
+        try{
+            String s=null;
+            System.out.println(s.length());
+        }
+        catch(NullPointerException e){
+            System.out.println("The mistake is: "+ e);
+            System.out.println("Enter the correct value");
+        }
+        System.out.println("NumberFormatException");
+        try{
+            String s="abc";
+            int i=Integer.parseInt(s);
+        }
+        catch(NumberFormatException e){
+            System.out.println("The mistake is: "+ e);
+            System.out.println("Enter the correct value");
+        }
+        System.out.println("ArrayOutOfBoundsException:");
+        try{
+            int a[]=new int[5];
+            a[10]=50;
+        }
+        catch (ArrayIndexOutOfBoundsException e){
+            System.out.println("The mistake is: "+ e);
+            System.out.println("Enter the correct value");
+        }
+        finally{
+            System.out.println("Thanks for visiting!");
+        }
+        System.out.println("Continue...");
+
+    }
+}
