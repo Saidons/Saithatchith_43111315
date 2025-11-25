@@ -1,0 +1,45 @@
+package study;
+public class Semo {
+    public static void main(String[] args) {
+
+    }
+}
+abstract class RBI{
+    private final void RBIBanking(){
+        System.out.println("Secret...");
+    }
+    abstract void agriLoan();
+    abstract void eduLoan();
+}
+class HDFC extends  RBI{
+
+    void agriLoan() {
+        System.out.println("12%");
+    }
+
+    void eduLoan() {
+        System.out.println("9.5%");
+    }
+}
+class Dhanalaxmi extends RBI{
+
+    void agriLoan() {
+
+    }
+
+    void eduLoan() {
+
+    }
+}
+
+interface Father{
+    void sign();
+}
+interface Mother{
+    void sign();
+}
+class Son implements Father,Mother{
+    public void sign(){
+        System.out.println();
+    }
+}
