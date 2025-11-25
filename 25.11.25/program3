@@ -1,0 +1,23 @@
+package study;
+
+public class Semo {
+    public static void main(String[] args) {
+        long startTime = System.currentTimeMillis();
+        StringBuffer sb = new StringBuffer("Sist");
+        for (int i=0;i<100000;i++){
+            sb.append("College");
+        }
+        System.out.println("Time take by"
+        +"StringBuffer:"+
+                (System.currentTimeMillis()-startTime)+"ms");
+        long startTime1 = System.currentTimeMillis();
+        StringBuffer sb2 = new StringBuffer("Sist");
+        for (int i=0;i<100000;i++){
+            sb2.append("College");
+        }
+        System.out.println("Time take by"
+                +"StringBuffer:"+
+                (System.currentTimeMillis()-startTime1)+"ms");
+    }
+
+}
