@@ -1,0 +1,86 @@
+package study;
+
+public class Semo {
+    public static void main(String[] args) {
+        
+        String s="Sachin";
+        System.out.println(s.toUpperCase());//SACHIN
+        System.out.println(s.toLowerCase());//sachin
+        System.out.println(s);
+
+       
+        String s1="  Sachin is a cricket player  ";
+        System.out.println(s1);//  Sachin
+        System.out.println(s1.trim());
+
+        
+        String s3="Sachin";
+        System.out.println(s3.startsWith("Sa"));//true
+        System.out.println(s3.endsWith("N"));
+
+     
+        String s4="Sachin Ten";
+        System.out.println(s4.charAt(0));//S
+        System.out.println(s4.charAt(3));
+
+
+        String s5="Sachin";
+        System.out.println(s5.length());
+
+       
+        String s6=new String("Sachin");
+        String s2=s6.intern();
+        System.out.println(s2);
+
+        
+        int a=10;
+        String s7=String.valueOf(a);
+        System.out.println(s7+10);
+
+       
+        String s8="Java is a programming language. Java is a platform. Java is an Island.";
+        String replaceString=s8.replace("Java","Python");//replaces all occurrences of "Java" to "Python"
+        System.out.println(replaceString);
+
+      
+        String s9="Sachin ";
+        String s10="Tendulkar";
+        String s11=s9.concat(s10);
+        System.out.println(s11);
+
+       
+        String str1="Sachin";
+        String str2="Sachin";
+        String str3 ="Ratan";
+        System.out.println(str1.compareTo(str2));
+        System.out.println(s1.compareTo(str3));
+        System.out.println(str3.compareTo(str1));
+
+       
+        String str4="javatpoint is a very good website";
+        String replaceString1=str4.replaceAll("a","e");//replaces all occurrences of "a" to "e"
+        System.out.println(replaceString1);
+
+  
+        String str5="java string split method by javatpoint";
+        String[] words=str5.split("\\s");
+        for(String w:words) {
+            System.out.println(w);
+        }
+
+        String str6="welcome to split world";
+        System.out.println("returning words:");
+        for(String w:str6.split("\\s",0)){
+            System.out.println(w);
+        }
+        System.out.println("returning words:");
+        for(String w:str6.split("\\s",1)){
+            System.out.println(w);
+        }
+        System.out.println("returning words:");
+        for(String w:str6.split("\\s",2)){
+            System.out.println(w);
+        }
+    }
+
+}
