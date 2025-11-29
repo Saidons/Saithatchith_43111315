@@ -1,0 +1,34 @@
+package nov27;
+import java.util.ArrayList;
+import java.util.Collections;
+public class ArrayLists {
+	public static void main(String[] args) {
+
+		ArrayList<String> list = new ArrayList<>();
+		list.add("Banana");
+		list.add("Apple");
+		list.add("Papaya");
+		list.add("Strawberry");
+		
+		System.out.println(list);
+		
+		list.set(3, "Pineapple");
+		System.out.println(list);
+		
+		Collections.sort(list);
+		System.out.println(list);
+		System.out.println(list.size());
+		System.out.println(list.get(2));
+		System.out.println();
+		
+		for(String fruits : list) {
+			System.out.println(fruits);
+		}
+		
+		
+		list.remove(3);
+		System.out.println(list);
+		
+		
+	}
+}
