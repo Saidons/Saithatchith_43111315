@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CardioRisk Classifier</title>
+    <style>
+        :root {
+            --ink: #17211d;
+            --muted: #65736d;
+            --line: #dfe7e2;
+            --panel: #ffffff;
+            --wash: #f4f8f6;
+            --brand: #0f766e;
+            --brand-dark: #0b534d;
+            --accent: #b42318;
+            --gold: #b7791f;
+            --shadow: 0 18px 50px rgba(22, 44, 35, 0.12);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            background: var(--wash);
+            color: var(--ink);
+            font-family: Arial, Helvetica, sans-serif;
+            line-height: 1.45;
+        }
+
+        button,
+        input,
+        select {
+            font: inherit;
+        }
+
+        .shell {
+            min-height: 100vh;
+        }
+
+        .topbar {
+            background: #0d302d;
+            color: #fff;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .topbar-inner {
+            width: min(1180px, calc(100% - 32px));
+            margin: 0 auto;
+            min-height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 800;
+            letter-spacing: 0;
+        }
+
+        .brand-mark {
+            width: 42px;
+            height: 42px;
+            border-radius: 8px;
+            display: grid;
+            place-items: center;
+            background: #e8fff6;
+            color: var(--brand-dark);
+            font-size: 24px;
+            font-weight: 900;
+        }
+
+        .top-meta {
+            display: flex;
+            gap: 18px;
+            align-items: center;
+            color: #cfe2dd;
+            font-size: 0.92rem;
+        }
+
+        .layout {
+            width: min(1180px, calc(100% - 32px));
+            margin: 26px auto 44px;
+            display: grid;
+            grid-template-columns: 248px 1fr;
+            gap: 22px;
+        }
+
+        .sidebar {
+            align-self: start;
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .nav-button {
+            width: 100%;
+            border: 0;
+            background: transparent;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px 16px;
+            color: var(--muted);
+            cursor: pointer;
+            text-align: left;
+            border-left: 4px solid transparent;
+        }
+
+        .nav-button svg {
+            width: 20px;
+            height: 20px;
+            flex: 0 0 auto;
+        }
+
+        .nav-button.active {
+            background: #ecf8f5;
+            border-left-color: var(--brand);
+            color: var(--brand-dark);
+            font-weight: 700;
+        }
+
+        main {
+            min-width: 0;
+        }
+
+        .hero {
+            background: #ffffff;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            padding: 26px;
+            box-shadow: var(--shadow);
+            display: grid;
+            grid-template-columns: minmax(0, 1.4fr) minmax(260px, 0.8fr);
+            gap: 24px;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .hero h1 {
+            font-size: clamp(1.8rem, 4vw, 3rem);
+            line-height: 1.05;
+            letter-spacing: 0;
+            margin-bottom: 12px;
+        }
+
+        .hero p {
+            color: var(--muted);
+            max-width: 680px;
+        }
+
+        .hero-visual {
+            min-height: 190px;
+            border-radius: 8px;
+            background:
+                radial-gradient(circle at 76% 26%, rgba(180, 35, 24, 0.18), transparent 28%),
+                linear-gradient(145deg, #e6f5f0, #ffffff);
+            border: 1px solid #d8e7e1;
+            display: grid;
+            place-items: center;
+            overflow: hidden;
+        }
+
+        .ecg {
+            width: 88%;
+            height: 126px;
+        }
+
+        .status-strip {
+            margin-top: 18px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .status-pill {
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            padding: 7px 12px;
+            color: var(--muted);
+            background: #fff;
+            font-size: 0.9rem;
+        }
+
+        .tab {
+            display: none;
+        }
+
+        .tab.active {
+            display: block;
+        }
+
+        .section {
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            padding: 22px;
+            margin-bottom: 20px;
+        }
+
+        .section-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 18px;
+            margin-bottom: 18px;
+        }
+
+        h2 {
+            font-size: 1.25rem;
+            letter-spacing: 0;
+        }
+
+        .subtle {
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .metric-card {
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            padding: 16px;
+            background: #fbfdfc;
+            min-height: 100px;
+        }
+
+        .metric-card span {
+            display: block;
+            color: var(--muted);
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+
+        .metric-card strong {
+            font-size: 1.8rem;
+            color: var(--brand-dark);
+        }
+
+        .rankings-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .ranking-box {
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            padding: 16px;
+            background: #fbfdfc;
+        }
+
+        .ranking-box h3 {
+            font-size: 1rem;
+            margin-bottom: 12px;
+        }
+
+        .ranking-item {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 10px;
+            padding: 9px 0;
+            border-top: 1px solid #e8efeb;
+            color: var(--muted);
+        }
+
+        .ranking-item:first-of-type {
+            border-top: 0;
+        }
+
+        .score {
+            color: var(--brand-dark);
+            font-weight: 700;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 7px;
+            font-size: 0.93rem;
+        }
+
+        .unit {
+            color: var(--muted);
+            font-weight: 400;
+        }
+
+        input,
+        select {
+            width: 100%;
+            min-height: 44px;
+            border: 1px solid #cfdad5;
+            border-radius: 8px;
+            background: #fff;
+            color: var(--ink);
+            padding: 10px 11px;
+        }
+
+        input:focus,
+        select:focus {
+            outline: 3px solid rgba(15, 118, 110, 0.16);
+            border-color: var(--brand);
+        }
+
+        .actions {
+            margin-top: 18px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .btn {
+            min-height: 44px;
+            border: 0;
+            border-radius: 8px;
+            padding: 0 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            font-weight: 800;
+        }
+
+        .btn svg {
+            width: 19px;
+            height: 19px;
+        }
+
+        .btn-primary {
+            background: var(--brand);
+            color: #fff;
+        }
+
+        .btn-secondary {
+            background: #eef5f2;
+            color: var(--brand-dark);
+            border: 1px solid #cfe0da;
+        }
+
+        .result {
+            margin-top: 18px;
+            border-radius: 8px;
+            border: 1px solid var(--line);
+            overflow: hidden;
+            display: none;
+        }
+
+        .result-head {
+            padding: 18px;
+            background: #0d302d;
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            gap: 14px;
+            align-items: center;
+        }
+
+        .risk-title {
+            font-size: 1.45rem;
+            font-weight: 900;
+        }
+
+        .risk-value {
+            font-size: 2rem;
+            font-weight: 900;
+        }
+
+        .bars {
+            padding: 18px;
+            background: #fff;
+            display: grid;
+            gap: 14px;
+        }
+
+        .bar-row {
+            display: grid;
+            grid-template-columns: 92px 1fr 60px;
+            gap: 10px;
+            align-items: center;
+            color: var(--muted);
+        }
+
+        .bar-track {
+            height: 12px;
+            border-radius: 999px;
+            background: #e7efeb;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            height: 100%;
+            background: var(--brand);
+            width: 0%;
+        }
+
+        .bar-fill.high {
+            background: var(--accent);
+        }
+
+        .chart-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .chart-box {
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: #fbfdfc;
+            min-height: 340px;
+            padding: 12px;
+            display: grid;
+            place-items: center;
+        }
+
+        .chart-box img {
+            width: 100%;
+            max-height: 360px;
+            object-fit: contain;
+        }
+
+        .loading,
+        .error {
+            display: none;
+            margin-top: 12px;
+            padding: 13px 14px;
+            border-radius: 8px;
+        }
+
+        .loading {
+            background: #edf8f5;
+            color: var(--brand-dark);
+            border: 1px solid #cce1da;
+        }
+
+        .error {
+            background: #fff1f0;
+            color: #8a1f16;
+            border: 1px solid #f0c7c2;
+        }
+
+        @media (max-width: 980px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .nav-button {
+                border-left: 0;
+                border-bottom: 4px solid transparent;
+                justify-content: center;
+            }
+
+            .nav-button.active {
+                border-bottom-color: var(--brand);
+            }
+
+            .hero,
+            .chart-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 760px) {
+            .topbar-inner,
+            .layout {
+                width: min(100% - 22px, 1180px);
+            }
+
+            .top-meta,
+            .hero-visual {
+                display: none;
+            }
+
+            .metrics-grid,
+            .rankings-grid,
+            .form-grid,
+            .sidebar {
+                grid-template-columns: 1fr;
+            }
+
+            .section,
+            .hero {
+                padding: 18px;
+            }
+
+            .result-head,
+            .section-head {
+                display: block;
+            }
+
+            .risk-value {
+                margin-top: 6px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="shell">
+        <header class="topbar">
+            <div class="topbar-inner">
+                <div class="brand">
+                    <div class="brand-mark">C</div>
+                    <div>
+                        <div>CardioRisk Classifier</div>
+                        <small>Calibrated cardiovascular risk assessment</small>
+                    </div>
+                </div>
+                <div class="top-meta">
+                    <span id="source-label">Initializing model</span>
+                    <span id="record-label">Records: --</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="layout">
+            <nav class="sidebar" aria-label="Main sections">
+                <button class="nav-button active" data-tab="dashboard" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 13h8V3H3v10Z"/><path d="M13 21h8V11h-8v10Z"/><path d="M13 3v6h8V3h-8Z"/><path d="M3 21h8v-6H3v6Z"/></svg>
+                    Dashboard
+                </button>
+                <button class="nav-button" data-tab="predict" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/><path d="M3.2 12h4.1l1.2-2.4 2.4 5.8 1.7-3.4h4.2"/></svg>
+                    Predict Risk
+                </button>
+                <button class="nav-button" data-tab="analysis" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+                    Analysis
+                </button>
+            </nav>
+
+            <main>
+                <section class="hero">
+                    <div>
+                        <h1>CardioRisk Classifier</h1>
+                        <p>A feature-ranked, probability-calibrated gradient boosting system for cardiovascular risk assessment. The project combines a clear machine-learning workflow with readable metrics, interpretable model signals, and a practical patient-entry form.</p>
+                        <div class="status-strip">
+                            <span class="status-pill">Isotonic calibration</span>
+                            <span class="status-pill">Gradient boosting</span>
+                            <span class="status-pill">Holdout evaluation</span>
+                        </div>
+                    </div>
+                    <div class="hero-visual" aria-hidden="true">
+                        <svg class="ecg" viewBox="0 0 420 126" fill="none">
+                            <path d="M0 76H76L96 76L115 34L142 104L165 76H222L245 76L264 22L294 110L319 76H420" stroke="#0f766e" stroke-width="8" stroke-linejoin="round"/>
+                            <path d="M0 76H76L96 76L115 34L142 104L165 76H222L245 76L264 22L294 110L319 76H420" stroke="#ffffff" stroke-width="3" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                </section>
+
+                <section id="dashboard" class="tab active">
+                    <div class="section">
+                        <div class="section-head">
+                            <div>
+                                <h2>Model Performance</h2>
+                                <p class="subtle">Scores are calculated on holdout data after calibration.</p>
+                            </div>
+                        </div>
+                        <div class="metrics-grid" id="metrics-grid"></div>
+                        <div class="loading" id="dashboard-loading">Training and calibrating the model...</div>
+                        <div class="error" id="dashboard-error"></div>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-head">
+                            <div>
+                                <h2>Feature Rankings</h2>
+                                <p class="subtle">Filter methods highlight signals that are useful for model interpretation.</p>
+                            </div>
+                        </div>
+                        <div class="rankings-grid" id="rankings-grid"></div>
+                    </div>
+                </section>
+
+                <section id="predict" class="tab">
+                    <div class="section">
+                        <div class="section-head">
+                            <div>
+                                <h2>Patient Risk Assessment</h2>
+                                <p class="subtle">Enter standard clinical values. The model handles scaling internally.</p>
+                            </div>
+                        </div>
+                        <form id="prediction-form">
+                            <div class="form-grid" id="input-fields"></div>
+                            <div class="actions">
+                                <button class="btn btn-primary" type="submit">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                                    Predict Risk
+                                </button>
+                                <button class="btn btn-secondary" id="sample-button" type="button">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-9-9"/><path d="M21 3v6h-6"/></svg>
+                                    Demo Values
+                                </button>
+                            </div>
+                        </form>
+                        <div class="loading" id="predict-loading">Calculating calibrated probability...</div>
+                        <div class="error" id="predict-error"></div>
+                        <div class="result" id="prediction-result"></div>
+                    </div>
+                </section>
+
+                <section id="analysis" class="tab">
+                    <div class="section">
+                        <div class="section-head">
+                            <div>
+                                <h2>Model Analysis</h2>
+                                <p class="subtle">Feature importance and confusion matrix generated from the trained model.</p>
+                            </div>
+                        </div>
+                        <div class="chart-grid">
+                            <div class="chart-box" id="importance-chart">Feature importance will load here.</div>
+                            <div class="chart-box" id="confusion-chart">Confusion matrix will load here.</div>
+                        </div>
+                        <div class="loading" id="analysis-loading">Rendering analysis charts...</div>
+                        <div class="error" id="analysis-error"></div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        let features = [];
+        let analysisLoaded = false;
+
+        const icons = {
+            correlation: 'Correlation',
+            mutual_information: 'Mutual information',
+            chi_square: 'Chi-square'
+        };
+
+        document.querySelectorAll('.nav-button').forEach((button) => {
+            button.addEventListener('click', () => switchTab(button.dataset.tab, button));
+        });
+
+        document.getElementById('sample-button').addEventListener('click', () => {
+            features.forEach((feature) => {
+                const field = document.getElementById(`field-${feature.name}`);
+                if (field) field.value = feature.value;
+            });
+        });
+
+        document.getElementById('prediction-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            await predictRisk();
+        });
+
+        function switchTab(tabName, button) {
+            document.querySelectorAll('.tab').forEach((tab) => tab.classList.remove('active'));
+            document.querySelectorAll('.nav-button').forEach((nav) => nav.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            button.classList.add('active');
+            if (tabName === 'analysis' && !analysisLoaded) {
+                loadAnalysis();
+            }
+        }
+
+        function show(elementId) {
+            document.getElementById(elementId).style.display = 'block';
+        }
+
+        function hide(elementId) {
+            document.getElementById(elementId).style.display = 'none';
+        }
+
+        function showError(elementId, message) {
+            const error = document.getElementById(elementId);
+            error.textContent = message;
+            error.style.display = 'block';
+        }
+
+        function formatPercent(value) {
+            return `${(value * 100).toFixed(1)}%`;
+        }
+
+        async function initializeDashboard() {
+            show('dashboard-loading');
+            hide('dashboard-error');
+            try {
+                const response = await fetch('/api/initialize', { method: 'POST' });
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.error || 'Model initialization failed');
+                features = data.features;
+                renderMetrics(data.metrics);
+                renderRankings(data.rankings);
+                renderInputs();
+                document.getElementById('source-label').textContent = data.dataset.source;
+                document.getElementById('record-label').textContent = `Records: ${data.dataset.records}`;
+            } catch (error) {
+                showError('dashboard-error', error.message);
+            } finally {
+                hide('dashboard-loading');
+            }
+        }
+
+        function renderMetrics(metrics) {
+            const grid = document.getElementById('metrics-grid');
+            grid.innerHTML = '';
+            Object.entries(metrics).forEach(([name, value]) => {
+                const card = document.createElement('div');
+                card.className = 'metric-card';
+                const display = name === 'Brier Score' ? value.toFixed(3) : formatPercent(value);
+                card.innerHTML = `<span>${name}</span><strong>${display}</strong>`;
+                grid.appendChild(card);
+            });
+        }
+
+        function renderRankings(rankings) {
+            const grid = document.getElementById('rankings-grid');
+            grid.innerHTML = '';
+            Object.entries(rankings).forEach(([name, rows]) => {
+                const box = document.createElement('div');
+                box.className = 'ranking-box';
+                box.innerHTML = `<h3>${icons[name] || name}</h3>`;
+                rows.forEach((row) => {
+                    const item = document.createElement('div');
+                    item.className = 'ranking-item';
+                    item.innerHTML = `<span>${row.feature}</span><span class="score">${row.score.toFixed(3)}</span>`;
+                    box.appendChild(item);
+                });
+                grid.appendChild(box);
+            });
+        }
+
+        function renderInputs() {
+            const container = document.getElementById('input-fields');
+            container.innerHTML = '';
+            features.forEach((feature) => {
+                const group = document.createElement('div');
+                const unit = feature.unit ? ` <span class="unit">(${feature.unit})</span>` : '';
+                let control = '';
+                if (feature.type === 'select') {
+                    const options = feature.options.map((option) => {
+                        const selected = Number(option.value) === Number(feature.value) ? 'selected' : '';
+                        return `<option value="${option.value}" ${selected}>${option.label}</option>`;
+                    }).join('');
+                    control = `<select id="field-${feature.name}" name="${feature.name}" required>${options}</select>`;
+                } else {
+                    control = `<input id="field-${feature.name}" name="${feature.name}" type="number" min="${feature.min}" max="${feature.max}" step="${feature.step}" value="${feature.value}" required>`;
+                }
+                group.innerHTML = `<label for="field-${feature.name}">${feature.label}${unit}</label>${control}`;
+                container.appendChild(group);
+            });
+        }
+
+        async function predictRisk() {
+            show('predict-loading');
+            hide('predict-error');
+            document.getElementById('prediction-result').style.display = 'none';
+            const values = {};
+            features.forEach((feature) => {
+                values[feature.name] = Number(document.getElementById(`field-${feature.name}`).value);
+            });
+            try {
+                const response = await fetch('/api/predict', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ values })
+                });
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.error || 'Prediction failed');
+                renderPrediction(data);
+            } catch (error) {
+                showError('predict-error', error.message);
+            } finally {
+                hide('predict-loading');
+            }
+        }
+
+        function renderPrediction(data) {
+            const result = document.getElementById('prediction-result');
+            const high = data.probabilities.high_risk;
+            const low = data.probabilities.low_risk;
+            result.innerHTML = `
+                <div class="result-head">
+                    <div>
+                        <div class="subtle" style="color:#cfe2dd;">Calibrated classification</div>
+                        <div class="risk-title">${data.risk_class}</div>
+                    </div>
+                    <div class="risk-value">${data.risk_percentage.toFixed(1)}%</div>
+                </div>
+                <div class="bars">
+                    <div class="bar-row">
+                        <strong>Low</strong>
+                        <div class="bar-track"><div class="bar-fill" style="width:${low}%"></div></div>
+                        <span>${low.toFixed(1)}%</span>
+                    </div>
+                    <div class="bar-row">
+                        <strong>High</strong>
+                        <div class="bar-track"><div class="bar-fill high" style="width:${high}%"></div></div>
+                        <span>${high.toFixed(1)}%</span>
+                    </div>
+                </div>
+            `;
+            result.style.display = 'block';
+        }
+
+        async function loadAnalysis() {
+            show('analysis-loading');
+            hide('analysis-error');
+            try {
+                const [importanceResponse, confusionResponse] = await Promise.all([
+                    fetch('/api/feature-importance'),
+                    fetch('/api/confusion-matrix')
+                ]);
+                const importance = await importanceResponse.json();
+                const confusion = await confusionResponse.json();
+                if (!importanceResponse.ok) throw new Error(importance.error || 'Feature importance failed');
+                if (!confusionResponse.ok) throw new Error(confusion.error || 'Confusion matrix failed');
+                document.getElementById('importance-chart').innerHTML = `<img src="${importance.image}" alt="Feature importance chart">`;
+                document.getElementById('confusion-chart').innerHTML = `<img src="${confusion.image}" alt="Confusion matrix chart">`;
+                analysisLoaded = true;
+            } catch (error) {
+                showError('analysis-error', error.message);
+            } finally {
+                hide('analysis-loading');
+            }
+        }
+
+        initializeDashboard();
+    </script>
+</body>
+</html>
